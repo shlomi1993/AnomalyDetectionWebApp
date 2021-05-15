@@ -1,4 +1,3 @@
-
 // Hello World Example
 var msg = 'Hello World';
 console.log(msg);

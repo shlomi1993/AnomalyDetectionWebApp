@@ -1,31 +1,13 @@
 // Written by Shlomi Ben-Shushan
 
 // Get fs and csv.
-const { forEach } = require('csv-string');
 const fs = require('fs');
 const adapi = require('./build/Release/AnomalyDetectionAPI');
+
 const resultFilePath = './anomalies.txt';
-
-class Anomaly {
-    id;
-    startTimeStep;
-    endTimeStep;
-    prop1;
-    prop2;
-    constructor(id, start, end, p1, p2) {
-        this.id = id;
-        this.startTimeStep = start;
-        this.endTimeStep = end;
-        this.prop1 = p1;
-        this.prop2 = p2;
-    }
-}
-
-function isNumeric(str) {
-    if (typeof str != "string")
-        return false
-    return !isNaN(str) && !isNaN(parseFloat(str))
-}
+var properties = [];
+var sameHeaders = 1;
+var differentHeadersError = 'Error: files must have the same headers.';
 
 function createDataCSV(srcFilePath, dstFilePath) {
 
@@ -41,20 +23,20 @@ function createDataCSV(srcFilePath, dstFilePath) {
     let content = fs.readFileSync(srcFilePath, 'utf8');
     let rows = content.split('\n');
 
-    // let firstColumns = rows[0].split(',');
-    // if (isNumeric(firstColumns[0])) {
-    //     let defaultHeaders = ''
-    //     let lim = firstColumns.length - 1;
-    //     let j;
-    //     for (j = 0; j < lim; j++) {
-    //         defaultHeaders += 'prop' + (j + 1) + ','; // Reminder!!!!! what to do when no headers?????
-    //     }
-    //     defaultHeaders += 'prop' + (j + 1) + '\n';
-    //     content = defaultHeaders + content;
-    // }
-
+    let firstColumns = rows[0].split(',');
+    if (properties.length === 0) {
+        firstColumns.forEach(c => {
+            properties.push(c);
+        });
+    } else {
+        let lim = properties.length;
+        for (let i = 0; i < lim; i++) {
+            if (firstColumns[i] != properties[i]) {
+                sameHeaders = 0;
+            }
+        }
+    }
     content = content.replaceAll(' ', '');
-
     fs.writeFileSync(dstFilePath, content, 'utf8');
 
 }
@@ -70,56 +52,69 @@ function cleanup(resultFilePath) {
 }
 
 function runAlgo(type, threshold) {
-    if (type == 0) {
+    if (!sameHeaders) {
+        fs.writeFileSync('anomalies.txt', differentHeadersError, 'utf8');
+    } else if (type == 0) {
         adapi.linearAnomalyDetection(threshold);
     } else if (type == 1) {
         adapi.hybridAnomalyDetection(threshold);
     }
 }
 
-function readOutput(resultFilePath) {
+function createJSON(resultFilePath) {
     fs.readFile(resultFilePath, 'utf8', function(err, data) {
         if (err) throw err;
         let anomalies = [];
-        let rows = data.split('\n');
-        let j = 1;
-        while (rows.length > 1) {
-            let id = "#" + j++;
-            let lim = rows.length - 1;
-            let firstPair = rows[0].split('\t');
-            let start = firstPair[0];
-            let prop1 = firstPair[1].split(' - ')[0];
-            let prop2 = firstPair[1].split(' - ')[1];
-            let end = start;
-            let i;
-            for (i = 1; i < lim; i++) {
-                let pair = rows[i].split('\t');
-                let tempEnd = Number(pair[0]);
-                let tempProp1 = pair[1].split(' - ')[0];
-                let tempProp2 = pair[1].split(' - ')[1];
-                if (Number(end) + 1 == tempEnd && tempProp1 === prop1 && tempProp2 === prop2) {
-                    end = tempEnd;
-                } else {
-                    break;
+        if (data.startsWith(differentHeadersError)) {
+            let json = {
+                ID: '-1',
+                Error: differentHeadersError
+            };
+            anomalies.push(json);
+        } else {
+            let rows = data.split('\n');
+            let j = 1;
+            while (rows.length > 1) {
+                let lim = rows.length - 1;
+                let firstPair = rows[0].split('\t');
+                let start = Number(firstPair[0]);
+                let prop1 = firstPair[1].split(' - ')[0];
+                let prop2 = firstPair[1].split(' - ')[1];
+                let end = start;
+                let i;
+                for (i = 1; i < lim; i++) {
+                    let pair = rows[i].split('\t');
+                    let tempEnd = Number(pair[0]);
+                    let tempProp1 = pair[1].split(' - ')[0];
+                    let tempProp2 = pair[1].split(' - ')[1];
+                    if (Number(end) + 1 == tempEnd && tempProp1 === prop1 && tempProp2 === prop2) {
+                        end = tempEnd;
+                    } else {
+                        break;
+                    }
                 }
+                rows = rows.slice(i);
+                let json = {
+                    ID: '#' + j++,
+                    startTimeStep: start,
+                    endTimeStep: end,
+                    property1: prop1,
+                    property2: prop2
+                };
+                anomalies.push(json);
             }
-            rows = rows.slice(i);
-            anomalies.push(new Anomaly(id, start, end, prop1, prop2));
         }
-
-        anomalies.forEach(a => {
-            // console.log(a.id + " " + a.startTimeStep + " " + a.endTimeStep + " " + a.prop1 + " " + a.prop2);
-            // 
-        });
-
+        anomalies = JSON.stringify(anomalies, null, 4);
+        fs.writeFileSync('Results.json', anomalies);
     });
 }
 
-
 function detectAnomalies(trainFilePath, testFilePath, type, threshold) {
+    sameHeaders = 1;
     return new Promise((resolve, reject) => {
-        reject("Success");
-        resolve("Failed");
+
+        resolve("Success");
+        reject("Failed");
     })
 
     .then(cleanup())
@@ -130,7 +125,7 @@ function detectAnomalies(trainFilePath, testFilePath, type, threshold) {
 
     .then(runAlgo(type, threshold))
 
-    .then(readOutput(resultFilePath))
+    .then(createJSON(resultFilePath))
 
     .catch((e) => {
         console.log(e);
@@ -145,6 +140,6 @@ module.exports = detectAnomalies;
 
 /*
 To-Do:
-    1) Handle illigal files.
+    1) Handle illigal files -- content or type
     2) JSONs.
 */

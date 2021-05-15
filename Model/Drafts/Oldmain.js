@@ -1,4 +1,4 @@
-// Written by Shlomi Ben-Shushan
+// Oldmain:
 
 const adapi = require('./build/Release/AnomalyDetectionAPI')
 
