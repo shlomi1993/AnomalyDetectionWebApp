@@ -1,3 +1,10 @@
+
+// Hello World Example
+var msg = 'Hello World';
+console.log(msg);
+console.log(msg.charAt(1));
+
+// SearchInFile Example.
 function searchText(key, text) {
     var result = ''
     text.split("\n").forEach(row => {
@@ -7,5 +14,4 @@ function searchText(key, text) {
     })
     return result
 }
-
 module.exports.searchText = searchText
