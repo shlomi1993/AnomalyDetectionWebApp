@@ -19,20 +19,20 @@ function createDataCSV(srcFilePath, dstFilePath) {
         if (fs.existsSync(dstFilePath)) {
             fs.unlinkSync(dstFilePath)
         }
-    } catch(err) {
+    } catch (err) {
         console.error(err)
     }
 
     // Read data and create input-files for Anomaly Detection algorithms.
     var data = [];
     fs.createReadStream(srcFilePath).pipe(parse()).on('data', (row) => {
-        data.push(row);       
+        data.push(row);
     }).on('end', () => {
         if (isNumeric(data[0][0])) {
             var defaultHeaders = []
             let lim = data[0].length;
             for (let j = 0; j < lim; j++) {
-                defaultHeaders[j] = "prop" + (j+1);
+                defaultHeaders[j] = "prop" + (j + 1);
             }
             data.unshift(defaultHeaders);
         }

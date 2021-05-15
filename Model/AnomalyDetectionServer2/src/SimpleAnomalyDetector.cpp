@@ -129,7 +129,7 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts) {
         // Look for a deviation that crossed the threshold and add it to the return vector.
         for (size_t j = 0; j < num_of_samples; ++j)
             if (isExceptional(Point(data1[j], data2[j]), this->cf[i]))
-                anomalies.emplace_back(f1 + "-" + f2, j + 1);
+                anomalies.emplace_back(f1 + " - " + f2, j + 1);
 
     }
 
