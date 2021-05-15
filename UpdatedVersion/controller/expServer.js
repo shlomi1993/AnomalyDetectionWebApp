@@ -1,6 +1,6 @@
 const express = require("express");
 const fileupload = require("express-fileupload");
-const model = require("../model/searchInFile");
+const model = require("../model/modelName"); // according to model name
 
 const app = express();
 
@@ -16,13 +16,17 @@ app.get("/", (req, res) => {
   res.sendFile("./index.html");
 });
 
-app.post("/search", (req, res) => {
-  res.write("searching for " + req.body.key + ":\n");
-  var key = req.body.key;
+app.post("/detect", (req, res) => {
+  res.write("In progress\n");
   if (req.files) {
-    var file = req.files.text_file;
-    var result = model.searchText(key, file.data.toString());
-    res.write(result);
+    var algorithm;
+    if (req.algorithm) {
+      algorithm = req.algorithm.value; // need to check if syntax is ok (.value)
+    }
+    var trainingFile = req.files.training_file;
+    var testingFile = req.files.testing_file;
+    var result = model.methodName(trainingFile, testingFile, algorithm); // according to the functions in the model
+    res.write(result.stringify()); // need to check how the results should be dispalyed
   }
   res.end();
 });
