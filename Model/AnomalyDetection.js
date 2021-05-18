@@ -32,8 +32,8 @@ function createDataCSV(srcFilePath, dstFilePath) {
         firstColumns.forEach(c => {
             properties.push(c);
         });
-    } 
-    
+    }
+
     // If properties array is already occupied, compare the headers of the new file to the
     // headers stored in the array. Note that regular and anomalious files' headers should
     // be the same headers.
@@ -95,7 +95,7 @@ function createJSON(resultFilePath) {
             };
             anomalies.push(json);
         }
-        
+
         // Else, parse the results in anomalies.txt file.
         else {
 
@@ -157,7 +157,6 @@ function createJSON(resultFilePath) {
 function detectAnomalies(trainFilePath, testFilePath, type, threshold) {
     sameHeaders = 1;
     return new Promise((resolve, reject) => {
-
         resolve("Success");
         reject("Failed");
     })
