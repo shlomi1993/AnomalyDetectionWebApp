@@ -1,35 +1,55 @@
-const express = require('express')
-const fileUpload = require('express-fileupload')
-const model = require('../Model/SearchInFile')
+const express = require("express")
+const fileupload = require("express-fileupload")
+const detectAnomalies = require("../Model/AnomalyDetection")
 
 const app = express()
-app.use(express.urlencoded({
-    extended: false
-}))
 
-app.use(fileUpload())
-app.use(express.static('../View'))
+app.use(
+    express.urlencoded({
+        extended: false,
+    })
+)
+app.use(fileupload())
+    // Determine root as ../view
+app.use(express.static("../view"))
 
+//GET retrieves resources
 app.get("/", (req, res) => {
-    res.sendFile('index.html')
+    res.sendFile("./index.html")
 })
 
-app.post('/search', (req, res) => {
-    res.write('searching for ' + req.body.key + ":\n")
-    var key = req.body.key
-    if (req.files) {
-        var file = req.files.text_file
-        var result = model.searchText(key, file.data.toString())
-        res.write(result)
+//POST submits new data to the server.
+//input algo - HYBRID/REG, CSV file, another file
+//output JSON - get JSON file from Model to View
+app.post("/detect", (req, res) => {
+    var algorithm = req.body.algorithm
+    res.write("Algorithm type: " + algorithm + "\n")
+        //Check if files and algorithm are valid
+    if (req.files && algorithm != "None") {
+        var trainFile = req.files.training_file
+        var testFile = req.files.testing_file
+        let choice = 1
+            //Convert user choice for model function
+        if (algorithm == "Hybrid Algorithm") {
+            res.write("USER CHOSE HYBRID\n")
+            choice = 2
+        }
+        var result = detectAnomalies(trainFile, testFile, choice, 0.9)
+        res.write(result.stringify())
     }
     res.end()
 })
 
-app.listen(8080)
-
 /*
-app.get()
-app.post()
-app.put()
-app.delete()
+//PUT updates existing data.
+app.put("", (req, res) => {
+  //CHECK IF NEED TO DO
+});
+
+//DELETE removes data.
+app.delete("", (req, res) => {
+  //CHECK IF NEED TO DO
+});
 */
+
+app.listen(8080)
