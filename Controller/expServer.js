@@ -10,18 +10,20 @@ app.use(
     })
 )
 app.use(fileupload())
-    // Determine root as ../view
-app.use(express.static("../view"))
 
-//GET retrieves resources
+// Set root as ../View
+app.use(express.static("../View"))
+
+// GET retrieves resources
 app.get("/", (req, res) => {
     res.sendFile("./index.html")
 })
 
-//POST submits new data to the server.
-//input algo - HYBRID/REG, CSV file, another file
-//output JSON - get JSON file from Model to View
+// POST submits new data to the server.
+//    * input algo:  HYBRID/REG, CSV file, another file
+//    * output JSON: get JSON file from Model to View
 app.post("/detect", (req, res) => {
+
     var algorithm = req.body.algorithm
     res.write("Algorithm type: " + algorithm + "\n")
         //Check if files and algorithm are valid
