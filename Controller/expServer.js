@@ -70,12 +70,9 @@ app.post('/detect', (req, res) => {
     console.log(t)
 
     res.write(' SOMETHING')
-
-
+    res.end()
 
     console.log('POST END')
-
-    res.end()
 
 
 })
