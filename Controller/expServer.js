@@ -1,8 +1,9 @@
 // Requirements.
-const fs = require('fs')
+var path = require('path')
 const express = require('express')
 const fileUpload = require('express-fileupload')
 const model = require('../Model/AnomalyDetection')
+
 
 // Using express server.
 const app = express()
@@ -32,14 +33,29 @@ app.post('/detect', (req, res) => {
 
     // Check if files and algorithm are valid.
     let algorithm = req.body.algorithm
-    if (!req.files || algorithm === 'None') {
+    if (!req.files.training_file || !req.files.testing_file || algorithm === 'None') {
+        res.write('Missing files or algotihrm.\n')
         res.end()
         return;
     }
 
+    // Extract files' names and extensions.
+    let trainName = req.files.training_file.name
+    let testName = req.files.testing_file.name
+    let ext1 = path.extname(trainName).toLowerCase()
+    let ext2 = path.extname(testName).toLowerCase()
+
+    // Verify files' extension validity.
+    if (ext1 !== '.csv' || ext2 !== '.csv') {
+        res.write('Invalid file type.\n')
+        res.end()
+        return;
+    }
+
+    // Describe the ongoing process for the user.
     res.write('Find anomalies between the following files: \n')
-    res.write(' 1) Train file:  ' + req.files.training_file.name + '\n')
-    res.write(' 2) Test file:   ' + req.files.testing_file.name + '\n\n')
+    res.write(' 1) Train file:  ' + trainName + '\n')
+    res.write(' 2) Test file:   ' + testName + '\n\n')
 
     // Get binary data from user's files.
     let trainData = req.files.training_file.data
