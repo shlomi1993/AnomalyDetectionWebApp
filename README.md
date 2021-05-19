@@ -9,7 +9,6 @@
 Tasks:
 ======
  - Handle non-csv files case.
- - Handle the interaction between MVC's components.
  - Improve UI.
  - Solve user-story 1.
  - Solve user-story 2.
