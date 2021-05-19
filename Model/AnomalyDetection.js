@@ -4,24 +4,32 @@
 const fs = require('fs');
 const adapi = require('../Model/build/Release/AnomalyDetectionAPI');
 
-// Set globals for anomaly detection process. 
-const resultFilePath = './anomalies.txt';
+// Set globals and consts for anomaly detection process. 
 var properties = [];
 var sameHeaders = 1;
-var differentHeadersError = 'Error: files must have the same headers.';
+const resultFilePath = './anomalies.txt'
+const anomalyTrain = './anomalyTrain.csv'
+const anomalyTest = './anomalyTest.csv'
+const differentHeadersError = 'Error: files must have the same headers.';
+
+// For each file (path) in the given array, this function remove it if it exists.
+function cleanup(array) {
+    array.forEach((file) => {
+        try {
+            if (fs.existsSync(file)) {
+                fs.unlinkSync(file)
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
+}
 
 // This function gets a csv path and create a new csv fit to the c++ program.
 function createDataCSV(srcFilePath, dstFilePath) {
 
-    // Delete old dst csv if exists.
-    try {
-        if (fs.existsSync(dstFilePath)) {
-            fs.unlinkSync(dstFilePath)
-        }
-    } catch (err) {
-        console.error(err)
-    }
-
+    // Transform binary data to a parsable content.
     let base64data = Buffer.from(srcFilePath, 'binary').toString('base64');
     let content = Buffer.from(base64data, 'base64').toString();
     let rows = content.split('\n');
@@ -49,22 +57,9 @@ function createDataCSV(srcFilePath, dstFilePath) {
         }
     }
 
-
-
     // Create a new file locally.
     fs.writeFileSync(dstFilePath, content, 'utf8');
 
-}
-
-// This function removes the old anomalies.txt file if exists.
-function cleanup(resultFilePath) {
-    try {
-        if (fs.existsSync(resultFilePath)) {
-            fs.unlinkSync(resultFilePath)
-        }
-    } catch (err) {
-        console.error(err);
-    }
 }
 
 // This function gets an algo type and threshold and run the rlevant algo.
@@ -75,12 +70,14 @@ function runAlgo(type, threshold) {
     } else if (type == 0) {
         adapi.linearAnomalyDetection(threshold);
     } else if (type == 1) {
+        adapi.hybridAnomalyDetection(2); // Threshold=2 forces the hybrid detector to find only circular anomalies.
+    } else if (type == 2) {
         adapi.hybridAnomalyDetection(threshold);
     }
 }
 
 // This function creats a JSON file out of all the anomalies found in the process.
-function createJSON(resultFilePath) {
+function createJSON(resultFilePath, callback) {
 
     // Read anomalies.txt file.
     fs.readFile(resultFilePath, 'utf8', function(err, data) {
@@ -147,11 +144,8 @@ function createJSON(resultFilePath) {
             }
         }
 
-        // In the end, convert a jsons to strings that can be save in Results.json file.
-        console.log(anomalies)
-
-        return JSON.stringify(anomalies, null, 4);
-        // fs.writeFileSync('Results.json', anomalies);
+        // In the end, convert a jsons to strings and notify result.
+        callback(JSON.stringify(anomalies, null, 4));
 
     });
 }
@@ -159,38 +153,15 @@ function createJSON(resultFilePath) {
 // This function gets train and test CSVs, a type of algo (0 for regression, 1 for hybrid) and threshold.
 // in creates two CSVs fitted to the C++ program, run the anomaly detection algo according to the given
 // type, and than creates a Results.json out of anomalies.txt.
-function detectAnomalies(trainFilePath, testFilePath, type, threshold) {
+function detectAnomalies(trainFilePath, testFilePath, type, threshold, callback) {
     sameHeaders = 1;
-    cleanup()
-    createDataCSV(trainFilePath, "anomalyTrain.csv")
-    createDataCSV(testFilePath, "anomalyTest.csv")
+    cleanup([resultFilePath, anomalyTrain, anomalyTest])
+    createDataCSV(trainFilePath, anomalyTrain)
+    createDataCSV(testFilePath, anomalyTest)
     runAlgo(type, threshold)
-    return createJSON(resultFilePath)
-
-    // return new Promise((resolve, reject) => {
-    //     resolve(globalAnomalies);
-    //     reject("Failed");
-    // })
-
-    // .then(cleanup())
-
-    // .then(createDataCSV(trainFilePath, "anomalyTrain.csv"))
-
-    // .then(createDataCSV(testFilePath, "anomalyTest.csv"))
-
-    // .then(runAlgo(type, threshold))
-
-    // .then(() => {
-    //     await createJSON(resultFilePath)
-    //     console.log(t)
-
-    // })
-
-    // .catch((e) => {
-    //     console.log(e);
-    // });
-
-
+    createJSON(resultFilePath, (result) => {
+        callback(result);
+    })
 }
 
 // Expose detectAnomalies() for an outside use.

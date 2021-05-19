@@ -14,36 +14,48 @@
 </head>
 
 <body>
-    <form action="/detect" method="POST" enctype="multipart/form-data" name="searchForm" typeget="result">
+    <form action="/detect" method="POST" enctype="multipart/form-data" name="searchForm" target="result">
         <table>
+
             <tr>
                 <td>
                     <select name="algorithm">
-              <option value="None" selected>---</option>
-              <option value="Regression Algorithm">Regression Algoirthm</option>
-              <option value="Hybrid Algorithm">Hybrid Algoirthm</option>
-            </select>
+                        <option value="None" selected> --- </option>
+                        <option value="Regression Algorithm">Regression Algoirthm</option>
+                        <option value="Circular Algorithm">Circular (Welzl) Algoirthm</option>
+                        <option value="Hybrid Algorithm">Hybrid Algoirthm</option>
+                    </select>
                 </td>
                 <td class="td-text">בחר אלגוריתם</td>
             </tr>
+
             <tr>
-                <td><input type="file" name="training_file" </td>
-                    <td class="td-text">קובץ תקין ללא חריגות</td>
+                <td><input type="file" name="training_file"></td>
+                <td class="td-text">קובץ תקין ללא חריגות</td>
             </tr>
+
             <tr>
-                <td><input type="file" name="testing_file" </td>
-                    <td class="td-text">קובץ עם חריגות</td>
+                <td><input type="file" name="testing_file"></td>
+                <td class="td-text">קובץ עם חריגות</td>
             </tr>
+
             <tr>
-                <td><output name="result" /></td>
+                <td><input type="number" name="new_threshold" value="0.9" step="0.01" min="0" max="1"></td>
+                <td class="td-text">בחר סף</td>
+            </tr>
+
+            <tr>
+                <td><output name="result"></td>
                 <td class="td-text">פלט</td>
             </tr>
         </table>
-        <br />
-        <input type="submit" name="submit" />
+        <br/>
+        <input type="submit" name="submit"/>
+        <br/>
+        <br/>
+        <iframe name="result" width="75%" height="500" style="background: #FFFFFF;"></frame>
     </form>
-    <br />
-    <frame name="result" width="80%" height="500"></frame>
+        
 </body>
 
 </html>

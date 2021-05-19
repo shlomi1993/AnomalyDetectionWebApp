@@ -22,7 +22,6 @@ app.use(express.static('../View'))
 
 // GET retrieves resources
 app.get('/', (req, res) => {
-    console.log('GET')
     res.sendFile('./index.html')
 })
 
@@ -31,8 +30,6 @@ app.get('/', (req, res) => {
 //    * output JSON: get JSON file from Model to View
 app.post('/detect', (req, res) => {
 
-    console.log('POST')
-
     // Check if files and algorithm are valid.
     let algorithm = req.body.algorithm
     if (!req.files || algorithm === 'None') {
@@ -40,7 +37,9 @@ app.post('/detect', (req, res) => {
         return;
     }
 
-    res.write('Looking for anomalies between ' + req.files.training_file.name + ' and ' + req.files.testing_file.name + '.')
+    res.write('Find anomalies between the following files: \n')
+    res.write(' 1) Train file:  ' + req.files.training_file.name + '\n')
+    res.write(' 2) Test file:   ' + req.files.testing_file.name + '\n\n')
 
     // Get binary data from user's files.
     let trainData = req.files.training_file.data
@@ -48,44 +47,24 @@ app.post('/detect', (req, res) => {
 
     // Convert user's choice for model function.
     let choice = 0
-    if (req.body.algorithm === 'Hybrid Algorithm') {
+    if (req.body.algorithm === 'Circular Algorithm') {
         choice = 1
+    } else if (req.body.algorithm === 'Hybrid Algorithm') {
+        choice = 2
     }
 
     // Convert user's threshold for model function.
-    let threshold = 0.9 // FIX THRESHOLD
+    let threshold = req.body.new_threshold
 
-    console.log('Run algo number ' + choice + ' with threshold ' + threshold + '.')
+    // Tell the user that the process has began.
+    res.write('Run ' + algorithm + ' with threshold of ' + threshold + '.\n')
 
-    // var p = new Promise((resolve, reject) => {
-    //     var t = model.detectAnomalies(trainData, testData, choice, threshold)
-    //     if (!t) reject('Failed')
-
-    //     resolve(t)
-    // }).then((t) => {
-    //     res.end()
-    // })
-
-    var t = model.detectAnomalies(trainData, testData, choice, threshold)
-    console.log(t)
-
-    res.write(' SOMETHING')
-    res.end()
-
-    console.log('POST END')
-
+    // Run algo.
+    model.detectAnomalies(trainData, testData, choice, threshold, (result) => {
+        res.write(result)
+        res.end()
+    })
 
 })
 
 app.listen(8080)
-console.log('Listening...')
-
-/*
-To-Do:
-* Need to implement PUT?
-* Need to implement DELETE?
-* Fix threshold.
-* Remove 'console.log()'
-* Hande ASYNC!!!
-* Connect to View
-*/
