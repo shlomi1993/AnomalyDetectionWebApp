@@ -9,8 +9,8 @@
 Tasks:
 ======
  - Handle non-csv files case.
+ - Show results beautifuly.
  - Improve UI.
- - Solve user-story 1.
  - Solve user-story 2.
  - Write a ReadMe and submit CSV files.
  - Tests.
