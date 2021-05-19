@@ -8,7 +8,6 @@
 
 Tasks:
 ======
- - Handle non-csv files case.
  - Show results beautifuly.
  - Improve UI.
  - Solve user-story 2.
