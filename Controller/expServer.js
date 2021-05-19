@@ -4,10 +4,6 @@ const express = require('express')
 const fileupload = require('express-fileupload')
 const detectAnomalies = require('../Model/AnomalyDetection')
 
-// Set consts.
-let trainName = './trainFile.csv'
-let testName = './testFile.csv'
-
 // Using express server.
 const app = express()
 
@@ -37,61 +33,30 @@ app.post('/detect', (req, res) => {
 
     console.log('POST')
 
-    return new Promise((resolve, reject) => {
-
-        console.log('New promise')
-
-        // Check if files and algorithm are valid.
-        let algorithm = req.body.algorithm
-        if (!req.files || algorithm === 'None') {
-            res.end()
-            reject('No files or algo.')
-            return;
-        }
-        resolve('Success');
-
-    })
-
-    // Save 1st file locally.
-    .then(() => {
-        console.log('Write file 1')
-        fs.writeFileSync(trainName, req.files.training_file.data)
-    })
-
-    // Save 2nd file locally.
-    .then(() => {
-        console.log('Write file 2')
-        fs.writeFileSync(testName, req.files.testing_file.data)
-    })
-
-
-    .then(() => {
-
-        // Convert user's choice for model function.
-        let choice = 0
-        if (req.body.algorithm == 'Hybrid Algorithm') {
-            choice = 1
-        }
-
-        // Convert user's threshold for model function.
-        let threshold = 0.9 // FIX THRESHOLD
-
-        console.log('Run algo with:')
-        console.log("  1) " + trainName)
-        console.log("  2) " + testName)
-        console.log("  3) " + choice)
-        console.log("  4) " + threshold)
-
-        detectAnomalies(trainName, testName, choice, threshold)
-    })
-
-    .then(() => {
+    // Check if files and algorithm are valid.
+    let algorithm = req.body.algorithm
+    if (!req.files || algorithm === 'None') {
         res.end()
-    })
+        return;
+    }
 
-    .catch((e) => {
-        console.log(e);
-    });
+    let trainData = req.files.training_file.data
+    let testData = req.files.testing_file.data
+
+    // Convert user's choice for model function.
+    let choice = 0
+    if (req.body.algorithm === 'Hybrid Algorithm') {
+        choice = 1
+    }
+
+    // Convert user's threshold for model function.
+    let threshold = 0.9 // FIX THRESHOLD
+
+    console.log('Run algo number ' + choice + ' with threshold ' + threshold + '.')
+
+    detectAnomalies(trainData, testData, choice, threshold)
+
+    res.end()
 
 })
 

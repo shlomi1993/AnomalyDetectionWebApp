@@ -22,8 +22,8 @@ function createDataCSV(srcFilePath, dstFilePath) {
         console.error(err)
     }
 
-    // Read src file to rows.
-    let content = fs.readFileSync(srcFilePath, 'utf8');
+    let base64data = Buffer.from(srcFilePath, 'binary').toString('base64');
+    let content = Buffer.from(base64data, 'base64').toString();
     let rows = content.split('\n');
 
     // Push each header in the csv to properties global array for later comparison.

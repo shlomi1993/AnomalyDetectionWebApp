@@ -1,16 +1,23 @@
 [
     {
         "ID": "#1",
-        "startTimeStep": 504,
-        "endTimeStep": 700,
-        "property1": "airspeed-kt",
-        "property2": "airspeed-indicator_indicated-speed-kt"
+        "startTimeStep": 7,
+        "endTimeStep": 7,
+        "property1": "A",
+        "property2": "B"
     },
     {
         "ID": "#2",
-        "startTimeStep": 531,
-        "endTimeStep": 700,
-        "property1": "airspeed-indicator_indicated-speed-kt",
-        "property2": "gps_indicated-ground-speed-kt"
+        "startTimeStep": 84,
+        "endTimeStep": 84,
+        "property1": "C",
+        "property2": "D"
+    },
+    {
+        "ID": "#3",
+        "startTimeStep": 14,
+        "endTimeStep": 14,
+        "property1": "E",
+        "property2": "F"
     }
 ]
