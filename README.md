@@ -9,9 +9,8 @@
 Tasks:
 ======
  - Handle non-csv files case.
- - Handle the interaction between MVC's components.
+ - Show results beautifuly.
  - Improve UI.
- - Solve user-story 1.
  - Solve user-story 2.
  - Write a ReadMe and submit CSV files.
  - Tests.
