@@ -1,8 +1,8 @@
 // Requirements.
 const fs = require('fs')
 const express = require('express')
-const fileupload = require('express-fileupload')
-const detectAnomalies = require('../Model/AnomalyDetection')
+const fileUpload = require('express-fileupload')
+const model = require('../Model/AnomalyDetection')
 
 // Using express server.
 const app = express()
@@ -15,7 +15,7 @@ app.use(
 )
 
 // To allow the user upload files.
-app.use(fileupload())
+app.use(fileUpload())
 
 // Set root as ../View
 app.use(express.static('../View'))
@@ -40,6 +40,9 @@ app.post('/detect', (req, res) => {
         return;
     }
 
+    res.write('Looking for anomalies between ' + req.files.training_file.name + ' and ' + req.files.testing_file.name + '.')
+
+    // Get binary data from user's files.
     let trainData = req.files.training_file.data
     let testData = req.files.testing_file.data
 
@@ -54,9 +57,26 @@ app.post('/detect', (req, res) => {
 
     console.log('Run algo number ' + choice + ' with threshold ' + threshold + '.')
 
-    detectAnomalies(trainData, testData, choice, threshold)
+    // var p = new Promise((resolve, reject) => {
+    //     var t = model.detectAnomalies(trainData, testData, choice, threshold)
+    //     if (!t) reject('Failed')
+
+    //     resolve(t)
+    // }).then((t) => {
+    //     res.end()
+    // })
+
+    var t = model.detectAnomalies(trainData, testData, choice, threshold)
+    console.log(t)
+
+    res.write(' SOMETHING')
+
+
+
+    console.log('POST END')
 
     res.end()
+
 
 })
 
@@ -67,6 +87,7 @@ console.log('Listening...')
 To-Do:
 * Need to implement PUT?
 * Need to implement DELETE?
+* Fix threshold.
 * Remove 'console.log()'
 * Hande ASYNC!!!
 * Connect to View

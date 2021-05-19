@@ -26,6 +26,9 @@ function createDataCSV(srcFilePath, dstFilePath) {
     let content = Buffer.from(base64data, 'base64').toString();
     let rows = content.split('\n');
 
+    // Eliminate spaces -- to fit the c++ program.
+    content = content.replaceAll(' ', '');
+
     // Push each header in the csv to properties global array for later comparison.
     let firstColumns = rows[0].split(',');
     if (properties.length === 0) {
@@ -46,8 +49,7 @@ function createDataCSV(srcFilePath, dstFilePath) {
         }
     }
 
-    // Eliminate spaces -- to fit the c++ program.
-    content = content.replaceAll(' ', '');
+
 
     // Create a new file locally.
     fs.writeFileSync(dstFilePath, content, 'utf8');
@@ -146,8 +148,11 @@ function createJSON(resultFilePath) {
         }
 
         // In the end, convert a jsons to strings that can be save in Results.json file.
-        anomalies = JSON.stringify(anomalies, null, 4);
-        fs.writeFileSync('Results.json', anomalies);
+        console.log(anomalies)
+
+        return JSON.stringify(anomalies, null, 4);
+        // fs.writeFileSync('Results.json', anomalies);
+
     });
 }
 
@@ -156,30 +161,40 @@ function createJSON(resultFilePath) {
 // type, and than creates a Results.json out of anomalies.txt.
 function detectAnomalies(trainFilePath, testFilePath, type, threshold) {
     sameHeaders = 1;
-    return new Promise((resolve, reject) => {
-        resolve("Success");
-        reject("Failed");
-    })
+    cleanup()
+    createDataCSV(trainFilePath, "anomalyTrain.csv")
+    createDataCSV(testFilePath, "anomalyTest.csv")
+    runAlgo(type, threshold)
+    return createJSON(resultFilePath)
 
-    .then(cleanup())
+    // return new Promise((resolve, reject) => {
+    //     resolve(globalAnomalies);
+    //     reject("Failed");
+    // })
 
-    .then(createDataCSV(trainFilePath, "anomalyTrain.csv"))
+    // .then(cleanup())
 
-    .then(createDataCSV(testFilePath, "anomalyTest.csv"))
+    // .then(createDataCSV(trainFilePath, "anomalyTrain.csv"))
 
-    .then(runAlgo(type, threshold))
+    // .then(createDataCSV(testFilePath, "anomalyTest.csv"))
 
-    .then(createJSON(resultFilePath))
+    // .then(runAlgo(type, threshold))
 
-    .catch((e) => {
-        console.log(e);
-    });
+    // .then(() => {
+    //     await createJSON(resultFilePath)
+    //     console.log(t)
+
+    // })
+
+    // .catch((e) => {
+    //     console.log(e);
+    // });
 
 
 }
 
 // Expose detectAnomalies() for an outside use.
-module.exports = detectAnomalies;
+module.exports.detectAnomalies = detectAnomalies;
 
 // Example of detectAnomalies() usage.
 // detectAnomalies("./reg_flight.csv", "./anomaly_flight.csv", 0, 0.9)
