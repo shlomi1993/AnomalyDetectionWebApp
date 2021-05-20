@@ -4,5 +4,6 @@
         "ostream": "cpp",
         "sstream": "cpp",
         "regex": "cpp"
-    }
+    },
+    "python.pythonPath": "/usr/bin/python3"
 }
