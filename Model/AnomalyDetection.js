@@ -1,19 +1,20 @@
 // Written by Shlomi Ben-Shushan
 
 // Get FS and anomaly detection API.
-const fs = require('fs');
-const adapi = require('../Model/build/Release/AnomalyDetectionAPI');
+const fs = require('fs')
+const adapi = require('../Model/build/Release/AnomalyDetectionAPI')
 
 // Set globals and consts for anomaly detection process. 
-var properties = [];
+var propertiesArrays = []
 var sameHeaders = 1;
 const resultFilePath = './anomalies.txt'
 const anomalyTrain = './anomalyTrain.csv'
 const anomalyTest = './anomalyTest.csv'
-const differentHeadersError = 'Error: files must have the same headers.';
+const differentHeadersError = 'Error: files must have the same headers.'
 
 // For each file (path) in the given array, this function remove it if it exists.
 function cleanup(array) {
+    propertiesArrays = []
     array.forEach((file) => {
         try {
             if (fs.existsSync(file)) {
@@ -23,54 +24,55 @@ function cleanup(array) {
             console.error(err);
         }
     });
-
 }
 
 // This function gets a csv path and create a new csv fit to the c++ program.
 function createDataCSV(srcFilePath, dstFilePath) {
 
-    // Transform binary data to a parsable content.
+    // Transform binary data to a parsable content and split it to rows.
     let base64data = Buffer.from(srcFilePath, 'binary').toString('base64');
     let content = Buffer.from(base64data, 'base64').toString();
     let rows = content.split('\n');
 
-    // Eliminate spaces -- to fit the c++ program.
+    // Eliminate spaces -- to fit the C++ program.
     content = content.replace(' ', '');
 
     // Push each header in the csv to properties global array for later comparison.
-    let firstColumns = rows[0].split(',');
-    if (properties.length === 0) {
-        firstColumns.forEach(c => {
-            properties.push(c);
-        });
-    }
-
-    // If properties array is already occupied, compare the headers of the new file to the
-    // headers stored in the array. Note that regular and anomalious files' headers should
-    // be the same headers.
-    else {
-        let lim = properties.length;
-        for (let i = 0; i < lim; i++) {
-            if (firstColumns[i] != properties[i]) {
-                sameHeaders = 0;
-            }
-        }
-    }
+    let headers = rows[0].split(',');
+    properties = []
+    headers.forEach(c => { properties.push(c); })
+    propertiesArrays.push(properties)
 
     // Create a new file locally.
     fs.writeFileSync(dstFilePath, content, 'utf8');
 
 }
 
+// This function compares the two header arrays of the two given files (train and test) and return
+//false if a change is found. Else, return true (train and test files must have the same headers).
+function checkHeaders() {
+    if (propertiesArrays.length < 2) return false
+    let headers1 = propertiesArrays[0]
+    let headers2 = propertiesArrays[1]
+    let lim = headers1.length
+    if (lim != headers2.length) return false
+    for (let i = 0; i < lim; i++) {
+        if (headers1[i] != headers2[i]) {
+            return false
+        }
+    }
+    return true
+}
+
 // This function gets an algo type and threshold and run the rlevant algo.
 // If the different files doesn't have the same headers, output an error message.
 function runAlgo(type, threshold) {
-    if (!sameHeaders) {
+    if (checkHeaders() == false) {
         fs.writeFileSync('anomalies.txt', differentHeadersError, 'utf8');
     } else if (type == 0) {
         adapi.linearAnomalyDetection(threshold);
     } else if (type == 1) {
-        adapi.hybridAnomalyDetection(2); // Threshold=2 forces the hybrid detector to find only circular anomalies.
+        adapi.hybridAnomalyDetection(2); // Threshold=2 forces the hybrid detector to find circular anomalies only.
     } else if (type == 2) {
         adapi.hybridAnomalyDetection(threshold);
     }
