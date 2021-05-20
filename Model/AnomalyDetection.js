@@ -35,7 +35,7 @@ function createDataCSV(srcFilePath, dstFilePath) {
     let rows = content.split('\n');
 
     // Eliminate spaces -- to fit the c++ program.
-    content = content.replaceAll(' ', '');
+    content = content.replace(' ', '');
 
     // Push each header in the csv to properties global array for later comparison.
     let firstColumns = rows[0].split(',');
