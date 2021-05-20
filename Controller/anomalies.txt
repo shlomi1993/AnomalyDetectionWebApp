@@ -1,2 +1,1 @@
-7	A - B
-84	C - D
+Error: files must have the same headers.

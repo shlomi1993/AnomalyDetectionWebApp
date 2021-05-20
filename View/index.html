@@ -43,19 +43,21 @@
                 <td><input type="number" name="new_threshold" value="0.9" step="0.01" min="0" max="1"></td>
                 <td class="td-text">בחר סף</td>
             </tr>
-
-            <tr>
+            <!-- <tr>
                 <td><output name="result"></td>
                 <td class="td-text">פלט</td>
+            </tr> -->
+            <tr>
+                <td><input type="submit" name="submit"/></td>
             </tr>
         </table>
         <br/>
-        <input type="submit" name="submit"/>
+        <p class="td-text">פלט</p>
+        <p id="new_result"></p>
+        <iframe class="result" name="result"></frame>
         <br/>
         <br/>
-        <iframe name="result" width="75%" height="500" style="background: #FFFFFF;"></frame>
     </form>
-        
 </body>
 
 </html>

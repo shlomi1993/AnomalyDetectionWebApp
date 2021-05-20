@@ -20,16 +20,17 @@
 header,
 body {
   background-image: -webkit-linear-gradient(
-      rgba(0, 0, 0, 0.7),
-      rgba(0, 0, 0, 0.7)
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.4)
     ),
     url(airplane-flying.jpeg);
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
     url(airplane-flying.jpeg);
   background-size: cover;
   background-position: center;
   height: 100vh;
   background-attachment: fixed;
+  color: white;
 }
 
 .hero-text-box {
@@ -78,11 +79,13 @@ h1 {
 /* ----------------------------------------------- */
 
 form {
+  color: white;
   width: 70%;
   margin: 0 auto;
 }
 
 input[type="file"],
+input[type="number"],
 frame,
 textarea {
   width: 100%;
@@ -90,6 +93,10 @@ textarea {
   border-radius: 3px;
   border: 2px solid #fff;
   color: #fff;
+}
+
+input[type="number"] {
+  color: black;
 }
 
 select {
@@ -122,21 +129,54 @@ input[type="submit"] {
   padding: 10px 30px;
   font-weight: 300;
   border-radius: 200px;
-}
-
-input[type="submit"] {
   background-color: #60a3bc;
   border: 3px solid #fff;
   font-size: 18px;
   color: #fff;
   margin-right: 100px;
   margin-left: auto;
+  margin-top: 20px;
   text-align: center;
-  position: relative;
 }
 
 table {
   position: relative;
   margin-left: auto;
   margin-right: auto;
+}
+
+.result {
+  width: 50%;
+  height:300;
+  border: 5px solid #60a3bc;
+  color: white;
+  font-size: 20px;
+  font-family: sans-serif;
+  font-weight: 150;
+  margin-right: 15vw;
+  margin-left: 15vw;
+  background-color:rgba(255,255,255,0.8);
+}
+
+iframe:focus {
+  outline: purple
+}
+
+iframe[seamless] {
+  display: flex;
+}
+
+/* pre {
+  tab-size: 5;
+  display: block;
+  font-family: sans-serif;
+  white-space: pre;
+  margin: 1em 0;
+  color: wheat;
+} */
+
+p {
+  margin-right: 18vw;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
