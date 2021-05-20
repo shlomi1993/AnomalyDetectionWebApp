@@ -73,7 +73,7 @@ app.post('/detect', (req, res) => {
     let threshold = req.body.new_threshold
 
     // Tell the user that the process has began.
-    res.write('Run ' + algorithm + ' with threshold of ' + threshold + '.\n')
+    res.write('Run ' + algorithm + ' with threshold of ' + threshold + '.\n\n')
 
     // Run algo.
     model.detectAnomalies(trainData, testData, choice, threshold, (result) => {
@@ -87,7 +87,7 @@ app.post('/detect', (req, res) => {
                 res.write("startTimeStep: " + jsonData[i].startTimeStep + "\n")
                 res.write("endTimeStep: " + jsonData[i].endTimeStep + "\n")
                 res.write("property1: " + jsonData[i].property1 + "\n")
-                res.write("property2: " + jsonData[i].property2 + "\n")
+                res.write("property2: " + jsonData[i].property2 + "\n\n")
             }
         }
         // res.write(result)

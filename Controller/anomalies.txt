@@ -1,1 +1,2 @@
-Error: files must have the same headers.
+7	A - B
+84	C - D
