@@ -10,6 +10,4 @@ node-gyp configure
 node-gyp build
 cd ../Controller
 npm install
-
-echo "Installation complete! Run Anomaly Detection Server..."
 node expServer.js

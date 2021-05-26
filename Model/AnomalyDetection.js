@@ -26,10 +26,10 @@ function cleanup(array) {
 }
 
 // This function gets a csv path and create a new csv fit to the c++ program.
-function createDataCSV(srcFilePath, dstFilePath) {
+function createDataCSV(srcFileData, dstFileData) {
 
     // Transform binary data to a parsable content and split it to rows.
-    let base64data = Buffer.from(srcFilePath, 'binary').toString('base64');
+    let base64data = Buffer.from(srcFileData, 'binary').toString('base64');
     let content = Buffer.from(base64data, 'base64').toString();
     let rows = content.split('\n');
 
@@ -43,7 +43,7 @@ function createDataCSV(srcFilePath, dstFilePath) {
     propertiesArrays.push(properties);
 
     // Create a new file locally.
-    fs.writeFileSync(dstFilePath, content, 'utf8');
+    fs.writeFileSync(dstFileData, content, 'utf8');
 
 }
 

@@ -32,8 +32,8 @@ app.post('/detect', (req, res) => {
 
     // Check if files and algorithm are valid.
     let algorithm = req.body.algorithm
-    if (!req.files.training_file || !req.files.testing_file || algorithm === 'None') {
-        res.write('Missing files or algotihrm.\n')
+    if (!req.files || !req.files.training_file || !req.files.testing_file || algorithm === 'None') {
+        res.write('Missing file or algotihrm.\n')
         res.end()
         return;
     }
@@ -95,3 +95,4 @@ app.post('/detect', (req, res) => {
 
 // Listening...
 app.listen(8080)
+console.log('\nAnomaly Detection Server is up!')
