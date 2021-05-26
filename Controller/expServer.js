@@ -19,7 +19,7 @@ app.use(
 app.use(fileUpload());
 
 // Set root as ../View
-app.use(express.static('./View'));
+app.use(express.static('../View'));
 
 // GET retrieves resources
 app.get('/', (req, res) => {
@@ -104,4 +104,4 @@ app.post('/detect', (req, res) => detect(req, res, sendJSON))
 app.post('/detectFromView', (req, res) => detect(req, res, view.sendHTML))
 
 // Listening...
-app.listen(8085, () => console.log('Anomaly Detection Server is up!'));
+app.listen(8086, () => console.log('Anomaly Detection Server is up!'));
