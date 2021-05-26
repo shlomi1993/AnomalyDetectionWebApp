@@ -8,8 +8,9 @@ cd ./Model
 npm install
 node-gyp configure
 node-gyp build
+
 cd ../Controller
 npm install
 
-echo -e "\n"
+echo -e
 node expServer.js

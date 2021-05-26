@@ -3,6 +3,7 @@ var path = require('path');
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const model = require('../Model/AnomalyDetection');
+const view = require('../View/view.js');
 
 // Using express server.
 const app = express();
@@ -89,13 +90,12 @@ app.post('/detect', (req, res) => {
 
     // Run algo.
     model.detectAnomalies(trainData, testData, choice, threshold, (result) => {
-        let jsonData = JSON.parse(result);
-        if (jsonData[0].ID === '-1') {
-            res.send(jsonData[0].Error);
+        view.displayAnomalies(algorithm, threshold, trainName, testName, result);
+        let jsons = JSON.parse(result);
+        if (jsons[0].ID === '-1') {
+            res.write(jsons[0].Error);
         } else {
-            let out = ''
-            jsonData.forEach(json => out += JSON.stringify(json, null, 4) + '\n');
-            res.send(out);
+            res.write(result);
         }
         res.end();
     })
@@ -103,4 +103,4 @@ app.post('/detect', (req, res) => {
 })
 
 // Listening...
-app.listen(8081, () => console.log('Anomaly Detection Server is up!'));
+app.listen(8080, () => console.log('Anomaly Detection Server is up!'));
