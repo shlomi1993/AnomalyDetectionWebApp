@@ -14,7 +14,7 @@ function sendHTML(req, res, result) {
     else {
 
         // Read an HTML template strored in the server.
-        let html = fs.readFileSync('./View/results.html', 'utf8');
+        let html = fs.readFileSync('../View/results.html', 'utf8');
 
         // Replace parts with new data.
         html = html.replace('<!--algorithm-->', req.body.algorithm);

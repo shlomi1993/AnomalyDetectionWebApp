@@ -104,4 +104,4 @@ app.post('/detect', (req, res) => detect(req, res, sendJSON))
 app.post('/detectFromView', (req, res) => detect(req, res, view.sendHTML))
 
 // Listening...
-app.listen(8086, () => console.log('Anomaly Detection Server is up!'));
+app.listen(8080, () => console.log('Anomaly Detection Server is up!'));
