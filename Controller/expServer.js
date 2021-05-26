@@ -19,17 +19,15 @@ app.use(
 app.use(fileUpload());
 
 // Set root as ../View
-app.use(express.static('../View'));
+app.use(express.static('./View'));
 
 // GET retrieves resources
 app.get('/', (req, res) => {
     res.sendFile('./index.html');
 });
 
-// POST submits new data to the server.
-//    * input algo:  HYBRID/REG, CSV file, another file
-//    * output JSON: get JSON file from Model to View
-app.post('/detect', (req, res) => {
+// This function creates the required input for the Anomaly Detection model, call it, and then call the given callback.
+function detect(req, res, callback) {
 
     // Check existance of files and algorithm.
     let errMsg = ''
@@ -45,7 +43,6 @@ app.post('/detect', (req, res) => {
     }
     if (errMsg !== '') {
         res.write(errMsg);
-        view.displayAnomalies([-1, errMsg]);
         res.end();
         return;
     }
@@ -65,7 +62,6 @@ app.post('/detect', (req, res) => {
     }
     if (errMsg !== '') {
         res.write(errMsg);
-        view.displayAnomalies([-1, errMsg]);
         res.end();
         return;
     }
@@ -87,19 +83,25 @@ app.post('/detect', (req, res) => {
     let threshold = req.body.new_threshold;
 
     // Run algo.
-    model.detectAnomalies(trainData, testData, choice, threshold, (result) => {
-        let jsons = JSON.parse(result);
-        if (jsons.length > 0 && jsons[0].ID === '-1') {
-            view.displayAnomalies([-1, jsons[0].Error]);
-            res.write(jsons[0].Error);
-        } else {
-            view.displayAnomalies([algorithm, threshold, trainName, testName, result]);
-            res.write(result);
-        }
-        res.end();
-    })
+    model.detectAnomalies(trainData, testData, choice, threshold, (result) => callback(req, res, result))
 
-})
+}
+
+function sendJSON(req, res, result) {
+    let jsons = JSON.parse(result);
+    if (jsons.length > 0 && jsons[0].ID === '-1') {
+        res.write(jsons[0].Error);
+    } else {
+        res.write(result);
+    }
+    res.end();
+}
+
+// POST /detect call detect function and then send a JSON result to the requester.
+app.post('/detect', (req, res) => detect(req, res, sendJSON))
+
+// POST /detectFromView call detect function and then call view's sendHTML function to create something visual.
+app.post('/detectFromView', (req, res) => detect(req, res, view.sendHTML))
 
 // Listening...
-app.listen(8080, () => console.log('Anomaly Detection Server is up!'));
+app.listen(8085, () => console.log('Anomaly Detection Server is up!'));
