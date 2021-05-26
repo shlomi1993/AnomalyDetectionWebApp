@@ -1,9 +1,9 @@
-function displayAnomalies(algorithm, threshold, trainName, testName, result) {
-    console.log(algorithm);
-    console.log(threshold);
-    console.log(trainName);
-    console.log(testName);
-    console.log(result);
+function displayAnomalies(args) {
+    console.log(args[0]);
+    console.log(args[1]);
+    console.log(args[2]);
+    console.log(args[3]);
+    console.log(args[4]);
 }
 
 module.exports.displayAnomalies = displayAnomalies;

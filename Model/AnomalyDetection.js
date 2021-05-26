@@ -152,10 +152,10 @@ function createJSON(resultsFile) {
 // This function gets train and test CSVs, a type of algo (0 for regression, 1 for hybrid) and threshold.
 // in creates two CSVs fitted to the C++ program, run the anomaly detection algo according to the given
 // type, and than creates a Results.json out of anomalies.txt.
-function detectAnomalies(trainFilePath, testFilePath, type, threshold, callback) {
+function detectAnomalies(trainFileData, testFileData, type, threshold, callback) {
     cleanup([resultsFile, anomalyTrain, anomalyTest]);
-    createDataCSV(trainFilePath, anomalyTrain);
-    createDataCSV(testFilePath, anomalyTest);
+    createDataCSV(trainFileData, anomalyTrain);
+    createDataCSV(testFileData, anomalyTest);
     runAlgo(type, threshold);
     callback(createJSON(resultsFile));
 }

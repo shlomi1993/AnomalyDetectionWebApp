@@ -32,23 +32,20 @@ app.get('/', (req, res) => {
 app.post('/detect', (req, res) => {
 
     // Check existance of files and algorithm.
+    let errMsg = ''
     if (!req.files) {
-        res.write('Error: missing training and test files.\n');
-        res.end();
-        return;
-    }
-    if (!req.files.training_file) {
-        res.write('Error: missing training file.\n');
-        res.end();
-        return;
-    }
-    if (!req.files.testing_file) {
-        res.write('Error: missing test file.\n');
-        res.end();
-        return;
+        errMsg += 'Error: missing training and test files.\n';
+    } else if (!req.files.training_file) {
+        errMsg += 'Error: missing training file.\n';
+    } else if (!req.files.testing_file) {
+        errMsg += 'Error: missing test file.\n';
     }
     if (req.body.algorithm === 'None') {
-        res.write('Error: missing algotihrm.\n');
+        errMsg += 'Error: missing algotihrm.\n';
+    }
+    if (errMsg !== '') {
+        res.write(errMsg);
+        view.displayAnomalies([-1, errMsg]);
         res.end();
         return;
     }
@@ -60,14 +57,15 @@ app.post('/detect', (req, res) => {
     let ext2 = path.extname(testName).toLowerCase();
 
     // Verify files' extension validity.
-    if (ext1 !== '.csv' || ext2 !== '.csv') {
-        res.write('Error: invalid file type:\n');
-        if (ext1 !== '.csv') {
-            res.write('\t' + trainName + ' is not a CSV type.\n');
-        }
-        if (ext2 !== '.csv') {
-            res.write('\t' + testName + ' is not a CSV type.\n');
-        }
+    if (ext1 !== '.csv') {
+        errMsg += 'Error: invalid file type: ' + trainName + '\n';
+    }
+    if (ext2 !== '.csv') {
+        errMsg += 'Error: invalid file type: ' + testName + '\n';
+    }
+    if (errMsg !== '') {
+        res.write(errMsg);
+        view.displayAnomalies([-1, errMsg]);
         res.end();
         return;
     }
@@ -90,11 +88,12 @@ app.post('/detect', (req, res) => {
 
     // Run algo.
     model.detectAnomalies(trainData, testData, choice, threshold, (result) => {
-        view.displayAnomalies(algorithm, threshold, trainName, testName, result);
         let jsons = JSON.parse(result);
-        if (jsons[0].ID === '-1') {
+        if (jsons.length > 0 && jsons[0].ID === '-1') {
+            view.displayAnomalies([-1, jsons[0].Error]);
             res.write(jsons[0].Error);
         } else {
+            view.displayAnomalies([algorithm, threshold, trainName, testName, result]);
             res.write(result);
         }
         res.end();
