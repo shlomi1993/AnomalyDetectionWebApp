@@ -10,4 +10,6 @@ node-gyp configure
 node-gyp build
 cd ../Controller
 npm install
+
+echo -e "\n"
 node expServer.js
