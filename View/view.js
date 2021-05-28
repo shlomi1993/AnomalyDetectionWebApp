@@ -25,23 +25,22 @@ function sendHTML(req, res, result) {
         // Transform anomalies to a list in HTML.
         let anomalies = '';
         jsons.forEach(json => {
-            let a = '<font size=4 color=black>Anomaly ID:       ' + json.ID + '</font><br>';
-            let b = '<font size=4 color=black>Start time step:  ' + json.startTimeStep + '</font><br>';
-            let c = '<font size=4 color=black>End time step:    ' + json.endTimeStep + '</font><br>';
-            let d = '<font size=4 color=black>Property 1:       ' + json.property1 + '</font><br>';
-            let e = '<font size=4 color=black>Property 2:       ' + json.property2 + '</font><br>';
-            anomalies += '<pre>' + a + b + c + d + e + '</pre>';
+            let a = '<tr><td>Anomaly ID:</td><td>' + json.ID + '</td></tr>';
+            let b = '<tr><td>Start time step:</td><td>' + json.startTimeStep + '</td></tr>';
+            let c = '<tr><td>End time step: </td><td>' + json.endTimeStep + '</td></tr>';
+            let d = '<tr><td>Property 1:</td><td>' + json.property1 + '</font></tr>';
+            let e = '<tr><td>Property 2:</td><td>' + json.property2 + '</font></tr>';
+            anomalies += '<table style="width:80%">' + a + b + c + d + e + '</table><br>';
         });
 
         // Set list.
         if (anomalies === '') {
-            anomalies = '<font size=4 color=black>No anomalies found.</font><br>';
+            anomalies = '<font>No anomalies found.</font><br>';
         }
         html = html.replace('<!--anomalies-->', anomalies);
 
         // Send it to the iframe.
         res.write(html)
-
 
     }
 
