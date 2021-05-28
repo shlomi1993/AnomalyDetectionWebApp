@@ -45,10 +45,12 @@ If you need to install one (or more) of the components to meet the requirements,
 2. Open the terminal in the server's main dictionary the and run the command: "./run.sh". This script will run "npm install" in the relevant diretories to get the required dependencies, and compile C++ part of the program using node-gyp.
 3. After server's setup is done, you can work in two ways:
 
-### Using WEB interface:
+#### Using WEB interface:
+
 Open the browser and connect to the server at "localhost:8080". Then, Fill the form and submit.
 
-# Using remote access:
+#### Using remote access:
+
 Send a POST request to "localhost:8080/detect" with the following data in the body:  
 1. algorithm: "Regression Algorithm" or "Circular Algorithm" or "Hybrid Algorithm".
 2. new_threshold: a fraction between 0 and 1.
@@ -59,13 +61,11 @@ After making the POST request, you will get a POST response with a JSON.
 
 ## Troubleshooting
 
-1. If you receive some errors you can file to enter the following commands:  
-   cd controller  
-   npm install node-gyp  
-   cd ..  
-   cd Model  
-   node-gyp configure  
-   node-gyp build  
-   cd ..  
-   cd controller  
-   node expServer.js  
+If you receive some errors with run.sh file, you can enter the following commands:
+1. cd ./Model
+2. npm install
+3. node-gyp configure
+4. node-gyp build
+5. cd ../Controller
+6. npm install
+7. node expServer.js 
