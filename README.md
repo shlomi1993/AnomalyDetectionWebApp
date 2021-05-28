@@ -76,10 +76,16 @@ If you receive some errors with run.sh file, you can enter the following command
 
 https://youtu.be/SGgPqtRiJm0
 
-Main view:
+## Screen shots
+
+Welcome screen:
 ![1](https://user-images.githubusercontent.com/72878018/119992408-2f72f600-bfd3-11eb-9159-907cb9206f63.png)
+
+Results example:
+![3](https://user-images.githubusercontent.com/72878018/119993335-20407800-bfd4-11eb-996c-2bbf43670ec1.png)
 
 Postman view:
 ![2](https://user-images.githubusercontent.com/72878018/119992450-3bf74e80-bfd3-11eb-9fbc-e881fe252163.png)
+
 
 
