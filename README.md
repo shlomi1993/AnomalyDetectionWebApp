@@ -39,6 +39,10 @@ If you need to install one (or more) of the components to meet the requirements,
 3. To install npm, use the command: "sudo apt-get install npm -y".
 4. To install node-gyp, use the command: "sudo npm install -g node-gyp".
 
+Note: for node-gyp, it is required to have Python v3.6 (or above) and GCC compiler pre-installed on your system.
+1. To install python3 use the command: "sudo apt-get install python3.6" (or 3.7 or 3.8 and so on).
+2. GCC usually pre-installed on Unix-based systems.
+
 ## Instructions
 
 1. Please make sure your system meet the requirements above.
