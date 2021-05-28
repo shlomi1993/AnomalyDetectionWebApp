@@ -1,0 +1,17 @@
+font {
+    font-family: 'Quicksand', sans-serif;
+    white-space: pre;
+    font-size:large;
+    color:black;
+}
+
+.font-results {
+    font-family: 'Quicksand', sans-serif;
+    white-space: pre;
+    font-size:large;
+    color: #181FB0;
+}
+
+.background-result {
+    background-color: rgba(255, 255, 255, 0.3);
+}
