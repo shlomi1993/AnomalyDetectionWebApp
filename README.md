@@ -45,7 +45,7 @@ If you need to install one (or more) of the components to meet the requirements,
 2. Open the terminal in the server's main dictionary the and run the command: "./run.sh". This script will run "npm install" in the relevant diretories to get the required dependencies, and compile C++ part of the program using node-gyp.
 3. After server's setup is done, you can work in two ways:
 
-# Using WEB interface:
+### Using WEB interface:
 Open the browser and connect to the server at "localhost:8080". Then, Fill the form and submit.
 
 # Using remote access:
@@ -53,8 +53,9 @@ Send a POST request to "localhost:8080/detect" with the following data in the bo
 1. algorithm: "Regression Algorithm" or "Circular Algorithm" or "Hybrid Algorithm".
 2. new_threshold: a fraction between 0 and 1.
 3. training_file: a CSV file for system training.
-4. testing_file: a CSV file for anomaly detection.  
-Afte making the POST request, you will get a POST response with a JSON.
+4. testing_file: a CSV file for anomaly detection.
+
+After making the POST request, you will get a POST response with a JSON.
 
 ## Troubleshooting
 
