@@ -6,7 +6,7 @@ function sendHTML(req, res, result) {
 
     // If an error occured, send is ans stop.
     let jsons = JSON.parse(result);
-    if (jsons[0].ID === '-1') {
+    if (jsons.length == 1 && jsons[0].ID === '-1') {
         res.write(jsons[0].Error);
     }
 
@@ -34,6 +34,9 @@ function sendHTML(req, res, result) {
         });
 
         // Set list.
+        if (anomalies === '') {
+            anomalies = '<font size=4 color=black>No anomalies found.</font><br>';
+        }
         html = html.replace('<!--anomalies-->', anomalies);
 
         // Send it to the iframe.

@@ -89,7 +89,7 @@ function detect(req, res, callback) {
 
 function sendJSON(req, res, result) {
     let jsons = JSON.parse(result);
-    if (jsons.length > 0 && jsons[0].ID === '-1') {
+    if (jsons.length == 0 && jsons[0].ID === '-1') {
         res.write(jsons[0].Error);
     } else {
         res.write(result);
