@@ -21,8 +21,6 @@ The application supports MVC architecture:
    POST - "/Detect/fromView" - we added this function in order to display our app view anomalies report  
 4. Model - "Model" folder - our server that by calling to some parameters, it returns the response to our API (controller)  
 
-
-
 ## Requirements
 
 To run the server, please make sure the following components are installed on your system:
@@ -73,3 +71,15 @@ If you receive some errors with run.sh file, you can enter the following command
 5. cd ../Controller
 6. npm install
 7. node expServer.js 
+
+## Introduction Video
+
+https://youtu.be/SGgPqtRiJm0
+
+Main view:
+![1](https://user-images.githubusercontent.com/72878018/119992408-2f72f600-bfd3-11eb-9159-907cb9206f63.png)
+
+Postman view:
+![2](https://user-images.githubusercontent.com/72878018/119992450-3bf74e80-bfd3-11eb-9fbc-e881fe252163.png)
+
+
